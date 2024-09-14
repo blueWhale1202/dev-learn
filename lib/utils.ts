@@ -12,3 +12,13 @@ export function moveElement<T>(arr: T[], from: number, to: number) {
 
     return newArr;
 }
+
+export function isEmptyText(text: string) {
+    const strippedMessage = text
+        .replace(/<[^>]*>/g, "") // remove HTML tags
+        .replace(/&nbsp;/g, "") // remove non-breaking spaces
+        .trim(); // remove leading/trailing spaces
+
+    // Check if the message is empty or only contains invisible characters
+    return strippedMessage.length === 0;
+}

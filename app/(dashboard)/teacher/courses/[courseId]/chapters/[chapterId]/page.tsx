@@ -4,6 +4,7 @@ import { auth } from "@clerk/nextjs/server";
 import { ArrowLeft, LayoutDashboard } from "lucide-react";
 import Link from "next/link";
 import { redirect } from "next/navigation";
+import { ChapterDescriptionForm } from "./_components/chapter-description-form";
 import { ChapterTitleForm } from "./_components/chapter-title-form";
 
 type Props = {
@@ -78,6 +79,12 @@ const ChapterPage = async ({ params }: Props) => {
                         </div>
 
                         <ChapterTitleForm
+                            initialData={chapter}
+                            chapterId={chapterId}
+                            courseId={courseId}
+                        />
+
+                        <ChapterDescriptionForm
                             initialData={chapter}
                             chapterId={chapterId}
                             courseId={courseId}
