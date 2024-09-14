@@ -37,7 +37,7 @@ export async function POST(req: Request, { params }: Params) {
 
         return NextResponse.json(attachment);
     } catch (error) {
-        console.log("🚀 [COURSE_ID_ATTACHMENTS] ~ PATCH ~ error:", error);
+        console.log("🚀 [COURSE_ID_ATTACHMENTS] ~ POST ~ error:", error);
         return new NextResponse("Internal Error", { status: 500 });
     }
 }

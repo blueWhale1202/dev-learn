@@ -13,6 +13,7 @@ import {
 
 import { AttachmentForm } from "./_components/attachment-form";
 import { CategoryForm } from "./_components/category-form";
+import { ChaptersForm } from "./_components/chapters-form";
 import { DescriptionForm } from "./_components/description-form";
 import { ImageForm } from "./_components/image-form";
 import { PriceForm } from "./_components/price-form";
@@ -34,8 +35,14 @@ const CoursePage = async ({ params }: Props) => {
     const course = await db.course.findUnique({
         where: {
             id: courseId,
+            userId,
         },
         include: {
+            chapters: {
+                orderBy: {
+                    position: "asc",
+                },
+            },
             attachments: {
                 orderBy: [
                     {
@@ -48,7 +55,6 @@ const CoursePage = async ({ params }: Props) => {
             },
         },
     });
-    console.log("🚀 ~ CoursePage ~ course:", course);
 
     if (!course) {
         return redirect("/");
@@ -65,9 +71,18 @@ const CoursePage = async ({ params }: Props) => {
         value: category.id,
     }));
 
-    const { title, description, imageUrl, price, categoryId } = course;
+    const { title, description, imageUrl, price, categoryId, chapters } =
+        course;
+    const hasPublishChapter = chapters.some((chapter) => chapter.isPublished);
 
-    const requiredFields = [title, description, imageUrl, price, categoryId];
+    const requiredFields = [
+        title,
+        description,
+        imageUrl,
+        price,
+        categoryId,
+        hasPublishChapter,
+    ];
     const totalFields = requiredFields.length;
     const completedFields = requiredFields.filter(Boolean).length;
 
@@ -108,7 +123,11 @@ const CoursePage = async ({ params }: Props) => {
                             <IconBadge icon={ListCheck} />
                             <h2 className="text-xl">Course chapters</h2>
                         </div>
-                        <div>TODO: Chapters</div>
+
+                        <ChaptersForm
+                            initialData={course}
+                            courseId={course.id}
+                        />
                     </div>
 
                     <div>

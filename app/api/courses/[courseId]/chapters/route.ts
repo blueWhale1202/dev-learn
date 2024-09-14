@@ -1,12 +1,11 @@
 import { db } from "@/lib/db";
-import { utapi } from "@/lib/server";
 import { auth } from "@clerk/nextjs/server";
 import { NextResponse } from "next/server";
 
 type Params = {
-    params: { courseId: string; attachmentId: string };
+    params: { courseId: string };
 };
-export async function DELETE(req: Request, { params }: Params) {
+export async function POST(req: Request, { params }: Params) {
     try {
         const { userId } = auth();
 
@@ -14,7 +13,7 @@ export async function DELETE(req: Request, { params }: Params) {
             return new NextResponse("Unauthorized", { status: 401 });
         }
 
-        const { courseId, attachmentId } = params;
+        const { courseId } = params;
 
         const isCourseOwner = await db.course.findUnique({
             where: {
@@ -27,18 +26,19 @@ export async function DELETE(req: Request, { params }: Params) {
             return new NextResponse("Unauthorized", { status: 401 });
         }
 
-        const attachment = await db.attachment.delete({
-            where: {
-                courseId,
-                id: attachmentId,
+        const { title, position } = await req.json();
+
+        const chapter = await db.chapter.create({
+            data: {
+                title,
+                position,
+                courseId: courseId,
             },
         });
 
-        await utapi.deleteFiles(attachment.name);
-
-        return NextResponse.json(attachment);
+        return NextResponse.json(chapter);
     } catch (error) {
-        console.log("🚀 [ATTACHMENT_ID] ~ DELETE ~ error:", error);
+        console.log("🚀 [COURSE_ID_CHAPTERS] ~ POST ~ error:", error);
         return new NextResponse("Internal Error", { status: 500 });
     }
 }

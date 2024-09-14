@@ -31,7 +31,6 @@ export const ImageForm = ({ initialData, courseId }: Props) => {
     };
 
     const onSubmit = async (values: { imageUrl: string }) => {
-        console.log(values);
         mutate(values, {
             onSuccess() {
                 onToggle();
@@ -69,13 +68,11 @@ export const ImageForm = ({ initialData, courseId }: Props) => {
                     </div>
                 ) : (
                     <div className="mt-2">
-                        <AspectRatio ratio={16 / 9}>
+                        <AspectRatio ratio={16 / 9} className="relative">
                             <Image
                                 fill
-                                priority
                                 src={initialData.imageUrl}
                                 alt="Image"
-                                sizes="(max-width: 600px) 100vw, (max-width: 1200px) 50vw, 33vw"
                                 className="object-cover rounded-md"
                             />
                         </AspectRatio>
