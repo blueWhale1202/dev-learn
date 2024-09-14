@@ -1,4 +1,13 @@
+import QueryProvider from "@/providers/query-provider";
 import { ClerkProvider } from "@clerk/nextjs";
+
+import { NextSSRPlugin } from "@uploadthing/react/next-ssr-plugin";
+import { extractRouterConfig } from "uploadthing/server";
+
+import { ourFileRouter } from "@/app/api/uploadthing/core";
+
+import { Toaster } from "@/components/ui/sonner";
+
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
@@ -18,7 +27,13 @@ export default function RootLayout({
     return (
         <ClerkProvider afterSignOutUrl="/sign-in">
             <html lang="en">
-                <body className={inter.className}>{children}</body>
+                <body className={inter.className}>
+                    <NextSSRPlugin
+                        routerConfig={extractRouterConfig(ourFileRouter)}
+                    />
+                    <QueryProvider>{children}</QueryProvider>
+                    <Toaster richColors theme="light" />
+                </body>
             </html>
         </ClerkProvider>
     );
