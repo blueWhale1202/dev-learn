@@ -96,3 +96,7 @@ body,
 .ql-container p {
     @apply !text-base;
 }
+
+.ql-container * {
+    @apply !bg-transparent;
+}
