@@ -1,6 +1,7 @@
 "use client";
 
 import { Chapter, Course } from "@prisma/client";
+import { ReorderChapter } from "../_types";
 
 import { useRouter } from "next/navigation";
 import { useId, useState } from "react";
@@ -20,13 +21,16 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 
-import { PlusCircle } from "lucide-react";
+import { ChaptersList } from "./chapters-list";
 
 import { AnimatePresence, motion } from "framer-motion";
-import { toast } from "sonner";
+import { Loader, PlusCircle } from "lucide-react";
 
 import { cn } from "@/lib/utils";
+import { toast } from "sonner";
+
 import { useCreateChapter } from "../_hooks/use-create-chapter";
+import { useReorderChapter } from "../_hooks/use-reorder-chapters";
 
 const formSchema = z.object({
     title: z.string().min(1, {
@@ -43,7 +47,6 @@ type Props = {
 
 export const ChaptersForm = ({ initialData, courseId }: Props) => {
     const [isCreating, setIsCreating] = useState(false);
-    const [isUpdating, setIsUpdating] = useState(false);
     const inputId = useId();
 
     const defaultValues = {
@@ -55,7 +58,8 @@ export const ChaptersForm = ({ initialData, courseId }: Props) => {
         defaultValues,
     });
 
-    const { mutate, isPending } = useCreateChapter(courseId);
+    const createChapter = useCreateChapter(courseId);
+    const reorderChapter = useReorderChapter(courseId);
     const router = useRouter();
 
     const onToggle = () => {
@@ -66,12 +70,7 @@ export const ChaptersForm = ({ initialData, courseId }: Props) => {
     const onSubmit = async (values: FormValues) => {
         const position = initialData.chapters.length + 1;
 
-        console.log({
-            ...values,
-            position,
-        });
-
-        mutate(
+        createChapter.mutate(
             { ...values, position },
             {
                 onSuccess() {
@@ -83,9 +82,31 @@ export const ChaptersForm = ({ initialData, courseId }: Props) => {
         );
     };
 
+    const onReorder = async (updateData: ReorderChapter[]) => {
+        reorderChapter.mutate(
+            {
+                list: updateData,
+            },
+            {
+                onSuccess() {
+                    toast.success("Reordered chapter");
+                },
+            }
+        );
+    };
+
+    const onEdit = (id: string) => {
+        router.push(`/teacher/courses/${courseId}/chapters/${id}`);
+    };
+
     return (
-        <div className="mt-6 p-4 border bg-slate-100 rounded-md shadow-md">
-            <div className="flex items-center justify-between">
+        <div className="mt-6 p-4 border bg-slate-100 rounded-md shadow-md relative">
+            {reorderChapter.isPending && (
+                <div className="absolute inset-0 bg-slate-500/20 rounded-md flex items-center justify-center">
+                    <Loader className="size-6 text-sky-700 animate-spin" />
+                </div>
+            )}
+            <div className="flex items-center justify-between mb-4">
                 <Label htmlFor={inputId} className="text-base font-medium">
                     Course description
                 </Label>
@@ -101,7 +122,7 @@ export const ChaptersForm = ({ initialData, courseId }: Props) => {
                 </Button>
             </div>
 
-            <div className="space-y-2">
+            <div className="space-y-4">
                 {!isCreating && (
                     <div
                         className={cn(
@@ -110,9 +131,15 @@ export const ChaptersForm = ({ initialData, courseId }: Props) => {
                                 "text-slate-500 italic"
                         )}
                     >
-                        {!initialData.chapters.length
-                            ? "No chapters"
-                            : "TODO: Add a list chapter"}
+                        {!initialData.chapters.length ? (
+                            "No chapters"
+                        ) : (
+                            <ChaptersList
+                                items={initialData.chapters || []}
+                                onReorder={onReorder}
+                                onEdit={onEdit}
+                            />
+                        )}
                     </div>
                 )}
 
@@ -165,7 +192,10 @@ export const ChaptersForm = ({ initialData, courseId }: Props) => {
                                 />
 
                                 <div className="flex items-center justify-end">
-                                    <Button type="submit" disabled={isPending}>
+                                    <Button
+                                        type="submit"
+                                        disabled={createChapter.isPending}
+                                    >
                                         Create
                                     </Button>
                                 </div>
