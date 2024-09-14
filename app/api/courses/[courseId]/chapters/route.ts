@@ -32,6 +32,7 @@ export async function POST(req: Request, { params }: Params) {
             data: {
                 title,
                 position,
+                userId,
                 courseId: courseId,
             },
         });

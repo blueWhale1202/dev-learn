@@ -1,10 +1,15 @@
+import { Chapter } from "@prisma/client";
+
 import { db } from "@/lib/db";
 import { auth } from "@clerk/nextjs/server";
 import { NextResponse } from "next/server";
 
+type UpdateData = Partial<Chapter>;
+
 type Params = {
-    params: { courseId: string };
+    params: { courseId: string; chapterId: string };
 };
+
 export async function PATCH(req: Request, { params }: Params) {
     try {
         const { userId } = auth();
@@ -13,34 +18,37 @@ export async function PATCH(req: Request, { params }: Params) {
             return new NextResponse("Unauthorized", { status: 401 });
         }
 
-        const { courseId } = params;
+        const { courseId, chapterId } = params;
 
-        const isOwnerCourse = await db.course.findUnique({
+        const isOwnerChapter = await db.chapter.findUnique({
             where: {
-                id: courseId,
+                id: chapterId,
                 userId,
             },
         });
 
-        if (!isOwnerCourse) {
+        if (!isOwnerChapter) {
             return new NextResponse("Unauthorized", { status: 401 });
         }
 
-        const values = await req.json();
+        const { isPublished, ...values }: UpdateData = await req.json();
 
-        const course = await db.course.update({
+        const chapter = await db.chapter.update({
             where: {
-                id: courseId,
+                id: chapterId,
                 userId,
+                courseId,
             },
             data: {
                 ...values,
             },
         });
 
-        return NextResponse.json(course);
+        // TODO: Upload video
+
+        return NextResponse.json(chapter);
     } catch (error) {
-        console.log("🚀 [COURSE_ID] ~ PATCH ~ error:", error);
+        console.log("🚀 [CHAPTER_ID] ~ PATCH ~ error:", error);
         return new NextResponse("Internal Error", { status: 500 });
     }
 }

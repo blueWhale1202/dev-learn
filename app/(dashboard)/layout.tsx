@@ -1,3 +1,4 @@
+import { ScrollArea } from "@/components/ui/scroll-area";
 import { Navbar } from "./_components/navbar";
 import { Sidebar } from "./_components/sidebar";
 
@@ -16,7 +17,9 @@ export default function DashboardLayout({
                 <Sidebar />
             </div>
 
-            <main className="md:pl-56 pt-20">{children}</main>
+            <ScrollArea className="md:pl-56 pt-20 w-screen h-screen">
+                {children}
+            </ScrollArea>
         </div>
     );
 }
