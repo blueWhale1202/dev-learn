@@ -38,3 +38,10 @@ next-env.d.ts
 
 # test ui
 /app/test
+
+# next-video
+videos/*
+!videos/*.json
+!videos/*.js
+!videos/*.ts
+public/_next-video

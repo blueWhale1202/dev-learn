@@ -5,6 +5,7 @@ import { NextResponse } from "next/server";
 type Params = {
     params: { courseId: string };
 };
+
 export async function POST(req: Request, { params }: Params) {
     try {
         const { userId } = auth();
