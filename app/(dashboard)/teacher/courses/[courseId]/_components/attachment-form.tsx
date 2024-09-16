@@ -3,18 +3,20 @@
 import { Attachment, Course } from "@prisma/client";
 
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useId, useState } from "react";
 
 import { Button } from "@/components/ui/button";
 
 import { FileUpload } from "@/components/file-upload";
 
-import { FileIcon, Loader, PlusCircle, X } from "lucide-react";
+import { Check, FileIcon, Loader, Pencil, PlusCircle, X } from "lucide-react";
 import { toast } from "sonner";
 
 import { useConfirm } from "@/hooks/use-confirm";
 import { useCreateAttachment } from "../_hooks/use-create-attachment";
 import { useDeleteAttachment } from "../_hooks/use-delete-attachment";
+import { useUpdateAttachment } from "../_hooks/use-update-attachment";
+import { AttachmentUpdateForm } from "./attchment-update-form";
 
 type Props = {
     initialData: Course & { attachments: Attachment[] };
@@ -23,7 +25,10 @@ type Props = {
 
 export const AttachmentForm = ({ initialData, courseId }: Props) => {
     const [isEditing, setIsEditing] = useState(false);
+
     const [deletingId, setDeletingId] = useState<string | null>(null);
+    const [editingId, setEditingId] = useState<string | null>(null);
+    const formId = useId();
 
     const { confirm, ConfirmDialog } = useConfirm(
         "Are you sure want delete attachment"
@@ -31,6 +36,7 @@ export const AttachmentForm = ({ initialData, courseId }: Props) => {
 
     const createAttachment = useCreateAttachment(courseId);
     const deleteAttachment = useDeleteAttachment(courseId);
+    const updateAttachment = useUpdateAttachment(courseId);
 
     const router = useRouter();
 
@@ -68,6 +74,35 @@ export const AttachmentForm = ({ initialData, courseId }: Props) => {
         });
     };
 
+    const onEdit = async (id: string, name: string) => {
+        updateAttachment.mutate(
+            {
+                id,
+                name,
+            },
+            {
+                onSuccess() {
+                    toast.success("Attachment updated");
+                    router.refresh();
+                },
+                onSettled() {
+                    setEditingId(null);
+                },
+            }
+        );
+    };
+
+    const onCancel = (id: string) => {
+        if (editingId === id) {
+            setEditingId(null);
+            return;
+        }
+
+        onDelete(id);
+    };
+
+    const isPending = updateAttachment.isPending || deleteAttachment.isPending;
+
     return (
         <>
             <ConfirmDialog />
@@ -98,21 +133,56 @@ export const AttachmentForm = ({ initialData, courseId }: Props) => {
                                     className="flex items-center p-3 w-full bg-sky-100 border border-sky-200 text-sky-700 rounded-md"
                                 >
                                     <FileIcon className="size-4 mr-2 flex-shrink-0" />
-                                    <p className="text-xs line-clamp-1">
-                                        {attachment.name}
-                                    </p>
 
-                                    {deletingId === attachment.id ? (
-                                        <Loader className="size-4 animate-spin ml-auto" />
+                                    {editingId === attachment.id ? (
+                                        <AttachmentUpdateForm
+                                            id={formId}
+                                            initialData={attachment}
+                                            onEdit={onEdit}
+                                        />
                                     ) : (
-                                        <button
-                                            className="ml-auto hover:opacity-75 transition"
-                                            onClick={() =>
-                                                onDelete(attachment.id)
-                                            }
-                                        >
-                                            <X className="size-4" />
-                                        </button>
+                                        <p className="text-xs line-clamp-1">
+                                            {attachment.name}
+                                        </p>
+                                    )}
+
+                                    {isPending &&
+                                        (editingId === attachment.id ||
+                                            deletingId === attachment.id) && (
+                                            <Loader className="size-4 animate-spin ml-auto" />
+                                        )}
+
+                                    {!isPending && (
+                                        <div className="flex items-center gap-x-2 ml-auto">
+                                            {editingId === attachment.id ? (
+                                                <button
+                                                    form={formId}
+                                                    key="check"
+                                                >
+                                                    <Check className="size-4" />
+                                                </button>
+                                            ) : (
+                                                <button key="edit">
+                                                    <Pencil
+                                                        className="size-4"
+                                                        onClick={() =>
+                                                            setEditingId(
+                                                                attachment.id
+                                                            )
+                                                        }
+                                                    />
+                                                </button>
+                                            )}
+
+                                            <button>
+                                                <X
+                                                    className="size-4"
+                                                    onClick={() =>
+                                                        onCancel(attachment.id)
+                                                    }
+                                                />
+                                            </button>
+                                        </div>
                                     )}
                                 </div>
                             ))}

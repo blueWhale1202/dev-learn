@@ -24,7 +24,7 @@ export async function PATCH(req: Request, { params }: Params) {
         });
 
         if (!chapter) {
-            return new NextResponse("Unauthorized", { status: 401 });
+            return new NextResponse("Not found", { status: 404 });
         }
 
         const unPublishedChapter = await db.chapter.update({

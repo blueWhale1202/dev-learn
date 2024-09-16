@@ -16,15 +16,15 @@ export async function POST(req: Request, { params }: Params) {
         const { courseId } = params;
         const { url }: { url: string } = await req.json();
 
-        const isCourseOwner = await db.course.findUnique({
+        const ownerCourse = await db.course.findUnique({
             where: {
                 id: courseId,
                 userId,
             },
         });
 
-        if (!isCourseOwner) {
-            return new NextResponse("Unauthorized", { status: 401 });
+        if (!ownerCourse) {
+            return new NextResponse("Not found", { status: 404 });
         }
 
         const attachment = await db.attachment.create({

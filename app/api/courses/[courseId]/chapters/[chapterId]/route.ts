@@ -23,47 +23,36 @@ export async function PATCH(req: Request, { params }: Params) {
 
         const { courseId, chapterId } = params;
 
-        const isOwnerChapter = await db.chapter.findUnique({
+        const chapter = await db.chapter.findUnique({
             where: {
                 id: chapterId,
                 userId,
             },
+            include: {
+                muxData: true,
+            },
         });
 
-        if (!isOwnerChapter) {
-            return new NextResponse("Unauthorized", { status: 401 });
+        if (!chapter) {
+            return new NextResponse("Not found", { status: 404 });
         }
 
         const { isPublished, ...values }: UpdateData = await req.json();
 
-        const chapter = await db.chapter.update({
-            where: {
-                id: chapterId,
-                userId,
-                courseId,
-            },
-            data: {
-                ...values,
-            },
-        });
-
         if (values.videoUrl) {
-            const existingMuxData = await db.muxData.findFirst({
-                where: {
-                    chapterId,
-                },
-            });
+            // update video
+            if (chapter.videoUrl) {
+                // clear old video
+                await utDeleteFile(chapter.videoUrl);
 
-            if (existingMuxData) {
-                await muxDeleteAsset(existingMuxData.assetId);
-                await Promise.all([
-                    await utDeleteFile(values.videoUrl),
+                if (chapter.muxData) {
+                    await muxDeleteAsset(chapter.muxData.assetId);
                     await db.muxData.delete({
                         where: {
-                            id: existingMuxData.id,
+                            id: chapter.muxData.id,
                         },
-                    }),
-                ]);
+                    });
+                }
             }
 
             const asset = await muxCreateAsset({
@@ -81,7 +70,18 @@ export async function PATCH(req: Request, { params }: Params) {
             });
         }
 
-        return NextResponse.json(chapter);
+        const updatedChapter = await db.chapter.update({
+            where: {
+                id: chapterId,
+                userId,
+                courseId,
+            },
+            data: {
+                ...values,
+            },
+        });
+
+        return NextResponse.json(updatedChapter);
     } catch (error) {
         console.log("🚀 [CHAPTER_ID] ~ PATCH ~ error:", error);
         return new NextResponse("Internal Error", { status: 500 });
@@ -104,30 +104,20 @@ export async function DELETE(req: Request, { params }: Params) {
                 userId,
                 courseId,
             },
+            include: {
+                muxData: true,
+            },
         });
 
         if (!chapter) {
-            return new NextResponse("Unauthorized", { status: 401 });
+            return new NextResponse("Not found", { status: 404 });
         }
 
         if (chapter.videoUrl) {
-            const existingMuxData = await db.muxData.findFirst({
-                where: {
-                    chapterId,
-                },
-            });
+            await utDeleteFile(chapter.videoUrl);
 
-            if (existingMuxData) {
-                await muxDeleteAsset(existingMuxData.assetId);
-
-                await Promise.all([
-                    await utDeleteFile(chapter.videoUrl),
-                    await db.muxData.delete({
-                        where: {
-                            id: existingMuxData.id,
-                        },
-                    }),
-                ]);
+            if (chapter.muxData?.assetId) {
+                await muxDeleteAsset(chapter.muxData.assetId);
             }
         }
 

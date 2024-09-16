@@ -32,7 +32,7 @@ export default function RootLayout({
                         routerConfig={extractRouterConfig(ourFileRouter)}
                     />
                     <QueryProvider>{children}</QueryProvider>
-                    <Toaster richColors theme="light" />
+                    <Toaster richColors theme="light" position="top-center" />
                 </body>
             </html>
         </ClerkProvider>

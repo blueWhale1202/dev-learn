@@ -21,19 +21,16 @@ export async function PATCH(req: Request, { params }: Params) {
                 id: chapterId,
                 userId,
             },
-        });
-
-        if (!chapter) {
-            return new NextResponse("Unauthorized", { status: 401 });
-        }
-
-        const muxData = await db.muxData.findUnique({
-            where: {
-                chapterId,
+            include: {
+                muxData: true,
             },
         });
 
-        const { title, description, videoUrl } = chapter;
+        if (!chapter) {
+            return new NextResponse("Not found", { status: 404 });
+        }
+
+        const { title, description, videoUrl, muxData } = chapter;
 
         if (!title || !description || !videoUrl || !muxData) {
             return new NextResponse("Missing require fields", { status: 400 });
