@@ -91,7 +91,7 @@ export const ChaptersList = ({ items, onReorder, onEdit }: Props) => {
 
                                         {chapter.title}
 
-                                        <div className="ml-auto pr-2 flex items-center">
+                                        <div className="ml-auto pr-2 flex items-center gap-x-1">
                                             {chapter.isFree && (
                                                 <Badge>Free</Badge>
                                             )}
@@ -100,7 +100,7 @@ export const ChaptersList = ({ items, onReorder, onEdit }: Props) => {
                                                 className={cn(
                                                     "bg-slate-500",
                                                     chapter.isPublished &&
-                                                        "bg-sky-700"
+                                                        "bg-sky-700 hover:bg-sky-600"
                                                 )}
                                             >
                                                 {chapter.isPublished

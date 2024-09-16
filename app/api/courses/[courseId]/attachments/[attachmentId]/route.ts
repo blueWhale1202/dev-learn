@@ -1,7 +1,8 @@
 import { db } from "@/lib/db";
-import { utapi } from "@/lib/server";
 import { auth } from "@clerk/nextjs/server";
 import { NextResponse } from "next/server";
+
+import { utDeleteFile } from "@/lib/ulapi";
 
 type Params = {
     params: { courseId: string; attachmentId: string };
@@ -34,7 +35,7 @@ export async function DELETE(req: Request, { params }: Params) {
             },
         });
 
-        await utapi.deleteFiles(attachment.name);
+        await utDeleteFile(attachment.name);
 
         return NextResponse.json(attachment);
     } catch (error) {

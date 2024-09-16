@@ -46,7 +46,7 @@ export async function PUT(req: Request, { params }: Params) {
 
         return new NextResponse("Reorder success", { status: 200 });
     } catch (error) {
-        console.log("🚀 [COURSE_ID_CHAPTERS] ~ POST ~ error:", error);
+        console.log("🚀 [REORDER] ~ PUT ~ error:", error);
         return new NextResponse("Internal Error", { status: 500 });
     }
 }

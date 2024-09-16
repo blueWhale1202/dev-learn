@@ -45,7 +45,7 @@ export const PriceForm = ({ initialData, courseId }: Props) => {
     const inputId = useId();
 
     const defaultValues = {
-        price: initialData.price || undefined,
+        price: initialData.price || 0,
     };
 
     const form = useForm<FormValues>({

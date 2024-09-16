@@ -1,9 +1,10 @@
 import { Course } from "@prisma/client";
 
 import { db } from "@/lib/db";
-import { utapi } from "@/lib/server";
 import { auth } from "@clerk/nextjs/server";
 import { NextResponse } from "next/server";
+
+import { utDeleteFile } from "@/lib/ulapi";
 
 type UpdateData = Partial<Course>;
 
@@ -35,12 +36,7 @@ export async function PATCH(req: Request, { params }: Params) {
         const values: UpdateData = await req.json();
 
         if (values.imageUrl && ownerCourse.imageUrl) {
-            console.log("values url: ", values.imageUrl);
-            console.log("course url: ", ownerCourse.imageUrl);
-
-            const fileName = ownerCourse.imageUrl.split("/").pop() || "";
-            const removeImage = await utapi.deleteFiles(fileName);
-            console.log("🚀 ~ PATCH ~ removeImage:", removeImage);
+            await utDeleteFile(ownerCourse.imageUrl);
         }
 
         const course = await db.course.update({

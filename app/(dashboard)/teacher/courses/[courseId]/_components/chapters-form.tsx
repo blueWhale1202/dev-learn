@@ -26,7 +26,6 @@ import { ChaptersList } from "./chapters-list";
 import { AnimatePresence, motion } from "framer-motion";
 import { Loader, PlusCircle } from "lucide-react";
 
-import { cn } from "@/lib/utils";
 import { toast } from "sonner";
 
 import { useCreateChapter } from "../_hooks/use-create-chapter";
@@ -108,7 +107,7 @@ export const ChaptersForm = ({ initialData, courseId }: Props) => {
             )}
             <div className="flex items-center justify-between mb-4">
                 <Label htmlFor={inputId} className="text-base font-medium">
-                    Course description
+                    Course chapters
                 </Label>
                 <Button variant="ghost" onClick={onToggle}>
                     {isCreating ? (
@@ -123,24 +122,18 @@ export const ChaptersForm = ({ initialData, courseId }: Props) => {
             </div>
 
             <div className="space-y-4">
-                {!isCreating && (
-                    <div
-                        className={cn(
-                            "text-sm",
-                            !initialData.chapters.length &&
-                                "text-slate-500 italic"
-                        )}
-                    >
-                        {!initialData.chapters.length ? (
-                            "No chapters"
-                        ) : (
-                            <ChaptersList
-                                items={initialData.chapters || []}
-                                onReorder={onReorder}
-                                onEdit={onEdit}
-                            />
-                        )}
+                {!isCreating && !initialData.chapters.length && (
+                    <div className={"text-sm text-slate-500 italic"}>
+                        No chapters
                     </div>
+                )}
+
+                {initialData.chapters.length > 0 && (
+                    <ChaptersList
+                        items={initialData.chapters || []}
+                        onReorder={onReorder}
+                        onEdit={onEdit}
+                    />
                 )}
 
                 {!isCreating && (

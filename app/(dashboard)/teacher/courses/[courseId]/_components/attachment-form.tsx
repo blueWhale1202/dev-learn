@@ -12,6 +12,7 @@ import { FileUpload } from "@/components/file-upload";
 import { FileIcon, Loader, PlusCircle, X } from "lucide-react";
 import { toast } from "sonner";
 
+import { useConfirm } from "@/hooks/use-confirm";
 import { useCreateAttachment } from "../_hooks/use-create-attachment";
 import { useDeleteAttachment } from "../_hooks/use-delete-attachment";
 
@@ -23,6 +24,10 @@ type Props = {
 export const AttachmentForm = ({ initialData, courseId }: Props) => {
     const [isEditing, setIsEditing] = useState(false);
     const [deletingId, setDeletingId] = useState<string | null>(null);
+
+    const { confirm, ConfirmDialog } = useConfirm(
+        "Are you sure want delete attachment"
+    );
 
     const createAttachment = useCreateAttachment(courseId);
     const deleteAttachment = useDeleteAttachment(courseId);
@@ -44,7 +49,11 @@ export const AttachmentForm = ({ initialData, courseId }: Props) => {
         });
     };
 
-    const onDelete = (id: string) => {
+    const onDelete = async (id: string) => {
+        const ok = await confirm();
+
+        if (!ok) return;
+
         console.log(id);
 
         setDeletingId(id);
@@ -60,64 +69,69 @@ export const AttachmentForm = ({ initialData, courseId }: Props) => {
     };
 
     return (
-        <div className="mt-6 p-4 border bg-slate-100 rounded-md shadow-md">
-            <div className="flex items-center justify-between">
-                <p className="text-base font-medium">Course attachments</p>
-                <Button variant="ghost" onClick={onToggle}>
-                    {isEditing && "Cancel"}
+        <>
+            <ConfirmDialog />
+            <div className="mt-6 p-4 border bg-slate-100 rounded-md shadow-md">
+                <div className="flex items-center justify-between">
+                    <p className="text-base font-medium">Course attachments</p>
+                    <Button variant="ghost" onClick={onToggle}>
+                        {isEditing && "Cancel"}
 
-                    {!isEditing && (
-                        <>
-                            <PlusCircle className="size-4 mr-2" />
-                            Add a file
-                        </>
-                    )}
-                </Button>
-            </div>
-            {!isEditing ? (
-                initialData.attachments.length === 0 ? (
-                    <p className="text-sm mt-2 text-slate-500 italic">
-                        No attachments yet
-                    </p>
-                ) : (
-                    <div className="space-y-2 mt-2">
-                        {initialData.attachments.map((attachment) => (
-                            <div
-                                key={attachment.id}
-                                className="flex items-center p-3 w-full bg-sky-100 border border-sky-200 text-sky-700 rounded-md"
-                            >
-                                <FileIcon className="size-4 mr-2 flex-shrink-0" />
-                                <p className="text-xs line-clamp-1">
-                                    {attachment.name}
-                                </p>
-
-                                {deletingId === attachment.id ? (
-                                    <Loader className="size-4 animate-spin ml-auto" />
-                                ) : (
-                                    <button
-                                        className="ml-auto hover:opacity-75 transition"
-                                        onClick={() => onDelete(attachment.id)}
-                                    >
-                                        <X className="size-4" />
-                                    </button>
-                                )}
-                            </div>
-                        ))}
-                    </div>
-                )
-            ) : (
-                <div>
-                    <FileUpload
-                        endpoint="courseAttachment"
-                        onChange={(url) => onSubmit({ url: url })}
-                    />
-
-                    <p className="text-xs text-muted-foreground mt-4">
-                        Add anything your students might need to complete the
-                        course
-                    </p>
+                        {!isEditing && (
+                            <>
+                                <PlusCircle className="size-4 mr-2" />
+                                Add a file
+                            </>
+                        )}
+                    </Button>
                 </div>
-            )}
-        </div>
+                {!isEditing ? (
+                    initialData.attachments.length === 0 ? (
+                        <p className="text-sm mt-2 text-slate-500 italic">
+                            No attachments yet
+                        </p>
+                    ) : (
+                        <div className="space-y-2 mt-2">
+                            {initialData.attachments.map((attachment) => (
+                                <div
+                                    key={attachment.id}
+                                    className="flex items-center p-3 w-full bg-sky-100 border border-sky-200 text-sky-700 rounded-md"
+                                >
+                                    <FileIcon className="size-4 mr-2 flex-shrink-0" />
+                                    <p className="text-xs line-clamp-1">
+                                        {attachment.name}
+                                    </p>
+
+                                    {deletingId === attachment.id ? (
+                                        <Loader className="size-4 animate-spin ml-auto" />
+                                    ) : (
+                                        <button
+                                            className="ml-auto hover:opacity-75 transition"
+                                            onClick={() =>
+                                                onDelete(attachment.id)
+                                            }
+                                        >
+                                            <X className="size-4" />
+                                        </button>
+                                    )}
+                                </div>
+                            ))}
+                        </div>
+                    )
+                ) : (
+                    <div>
+                        <FileUpload
+                            endpoint="courseAttachment"
+                            onChange={(url) => onSubmit({ url: url })}
+                        />
+
+                        <p className="text-xs text-muted-foreground mt-4">
+                            Add anything your students might need to complete
+                            the course
+                        </p>
+                    </div>
+                )}
+            </div>
+        </>
     );
 };

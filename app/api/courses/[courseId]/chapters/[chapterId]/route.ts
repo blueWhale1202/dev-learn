@@ -4,13 +4,8 @@ import { db } from "@/lib/db";
 import { auth } from "@clerk/nextjs/server";
 import { NextResponse } from "next/server";
 
-import { utapi } from "@/lib/server";
-import Mux from "@mux/mux-node";
-
-const { video } = new Mux({
-    tokenId: process.env.MUX_TOKEN_ID,
-    tokenSecret: process.env.MUX_TOKEN_SECRET,
-});
+import { muxCreateAsset, muxDeleteAsset } from "@/lib/mux";
+import { utDeleteFile } from "@/lib/ulapi";
 
 type UpdateData = Partial<Chapter>;
 
@@ -60,18 +55,18 @@ export async function PATCH(req: Request, { params }: Params) {
             });
 
             if (existingMuxData) {
-                await video.assets.delete(existingMuxData.assetId);
-
-                const fileName = values.videoUrl.split("/").pop();
-                await utapi.deleteFiles(fileName || "");
-                await db.muxData.delete({
-                    where: {
-                        id: existingMuxData.id,
-                    },
-                });
+                await muxDeleteAsset(existingMuxData.assetId);
+                await Promise.all([
+                    await utDeleteFile(values.videoUrl),
+                    await db.muxData.delete({
+                        where: {
+                            id: existingMuxData.id,
+                        },
+                    }),
+                ]);
             }
 
-            const asset = await video.assets.create({
+            const asset = await muxCreateAsset({
                 input: [{ url: values.videoUrl }],
                 playback_policy: ["public"],
                 test: false,
@@ -89,6 +84,82 @@ export async function PATCH(req: Request, { params }: Params) {
         return NextResponse.json(chapter);
     } catch (error) {
         console.log("🚀 [CHAPTER_ID] ~ PATCH ~ error:", error);
+        return new NextResponse("Internal Error", { status: 500 });
+    }
+}
+
+export async function DELETE(req: Request, { params }: Params) {
+    try {
+        const { userId } = auth();
+
+        if (!userId) {
+            return new NextResponse("Unauthorized", { status: 401 });
+        }
+
+        const { courseId, chapterId } = params;
+
+        const chapter = await db.chapter.findUnique({
+            where: {
+                id: chapterId,
+                userId,
+                courseId,
+            },
+        });
+
+        if (!chapter) {
+            return new NextResponse("Unauthorized", { status: 401 });
+        }
+
+        if (chapter.videoUrl) {
+            const existingMuxData = await db.muxData.findFirst({
+                where: {
+                    chapterId,
+                },
+            });
+
+            if (existingMuxData) {
+                await muxDeleteAsset(existingMuxData.assetId);
+
+                await Promise.all([
+                    await utDeleteFile(chapter.videoUrl),
+                    await db.muxData.delete({
+                        where: {
+                            id: existingMuxData.id,
+                        },
+                    }),
+                ]);
+            }
+        }
+
+        const deletedChapter = await db.chapter.delete({
+            where: {
+                userId,
+                courseId,
+                id: chapterId,
+            },
+        });
+
+        const publishedChaptersInCourse = await db.chapter.findMany({
+            where: {
+                courseId,
+                isPublished: true,
+            },
+        });
+
+        if (!publishedChaptersInCourse.length) {
+            await db.course.update({
+                where: {
+                    id: courseId,
+                },
+                data: {
+                    isPublished: false,
+                },
+            });
+        }
+
+        return NextResponse.json(deletedChapter);
+    } catch (error) {
+        console.log("🚀 [CHAPTER_ID] ~ DELETE ~ error:", error);
         return new NextResponse("Internal Error", { status: 500 });
     }
 }
