@@ -33,16 +33,18 @@ export async function PUT(req: Request, { params }: Params) {
 
         const { list }: UpdateData = await req.json();
 
-        for (const item of list) {
-            await db.chapter.update({
+        const updatePromises = list.map((item) =>
+            db.chapter.update({
                 where: {
                     id: item.id,
                 },
                 data: {
                     position: item.position,
                 },
-            });
-        }
+            })
+        );
+
+        await Promise.all(updatePromises);
 
         return new NextResponse("Reorder success", { status: 200 });
     } catch (error) {

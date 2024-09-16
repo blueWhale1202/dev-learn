@@ -1,5 +1,8 @@
 "use client";
 
+import { useRouter } from "next/navigation";
+import { useId, useState } from "react";
+
 import { Button } from "@/components/ui/button";
 import {
     Dialog,
@@ -24,17 +27,15 @@ import {
 
 import { CreateCourseForm, CreateFormValues } from "./form-create";
 
-import { useRouter } from "next/navigation";
-import { useId, useState } from "react";
-
+import { PlusCircle } from "lucide-react";
 import { toast } from "sonner";
 
 import { useMediaQuery } from "@/hooks/use-media-query";
 import { useCreateCourse } from "../_hooks/use-create-course";
 
 export const CourseDialog = () => {
-    const formId = useId();
     const [open, setOpen] = useState(false);
+    const formId = useId();
 
     const isDesktop = useMediaQuery("(min-width: 768px)");
 
@@ -44,6 +45,7 @@ export const CourseDialog = () => {
     const onSubmit = (values: CreateFormValues) => {
         mutate(values, {
             onSuccess(data) {
+                router.refresh();
                 router.push(`/teacher/courses/${data.id}`);
 
                 setOpen(false);
@@ -56,7 +58,10 @@ export const CourseDialog = () => {
         return (
             <Dialog open={open} onOpenChange={setOpen}>
                 <DialogTrigger asChild>
-                    <Button>Create new course</Button>
+                    <Button>
+                        <PlusCircle className="size-4 mr-2" />
+                        Create course
+                    </Button>
                 </DialogTrigger>
                 <DialogContent className="sm:max-w-[425px]">
                     <DialogHeader>

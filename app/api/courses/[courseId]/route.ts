@@ -5,7 +5,7 @@ import { auth } from "@clerk/nextjs/server";
 import { NextResponse } from "next/server";
 
 import { muxDeleteAsset } from "@/lib/mux";
-import { utDeleteFile } from "@/lib/ulapi";
+import { utDeleteFile, utDeleteFiles } from "@/lib/ulapi";
 
 type UpdateData = Partial<Course>;
 
@@ -78,6 +78,7 @@ export async function DELETE(req: Request, { params }: Params) {
                         muxData: true,
                     },
                 },
+                attachments: true,
             },
         });
 
@@ -85,11 +86,34 @@ export async function DELETE(req: Request, { params }: Params) {
             return new NextResponse("Not found", { status: 404 });
         }
 
-        for (const chapter of course.chapters) {
-            if (chapter.muxData?.assetId) {
-                await muxDeleteAsset(chapter.muxData.assetId);
+        const attachmentIds: string[] = [];
+        const videoUrls: string[] = [];
+        const assetIds: string[] = [];
+
+        course.attachments.forEach((attachment) => {
+            if (attachment.url) {
+                attachmentIds.push(attachment.url);
             }
-        }
+        });
+
+        course.chapters.forEach((chapter) => {
+            if (chapter.videoUrl) {
+                videoUrls.push(chapter.videoUrl);
+            }
+
+            if (chapter.muxData?.assetId) {
+                assetIds.push(chapter.muxData.assetId);
+            }
+        });
+
+        await Promise.all([
+            utDeleteFiles([
+                ...attachmentIds,
+                ...videoUrls,
+                course.imageUrl || "",
+            ]),
+            ...assetIds.map((assetId) => muxDeleteAsset(assetId)),
+        ]);
 
         const deletedCourse = await db.course.delete({
             where: {

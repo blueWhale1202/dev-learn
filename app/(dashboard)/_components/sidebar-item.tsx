@@ -3,6 +3,7 @@
 import { cn } from "@/lib/utils";
 import { TRoute } from "../_types";
 
+import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 
 interface Props extends TRoute {}
@@ -21,14 +22,14 @@ export const SidebarItem = ({ label, href, icon: Icon }: Props) => {
     };
 
     return (
-        <button
+        <Link
             type="button"
             className={cn(
                 "flex items-center gap-x-2 pl-6 transition-all text-slate-500 text-sm font-medium hover:text-slate-600 hover:bg-slate-300/70",
                 isActive &&
                     "text-sky-700 bg-sky-200/20 hover:bg-sky-200/20 hover:text-sky-700"
             )}
-            onClick={onClick}
+            href={href}
         >
             <div className="flex items-center gap-x-2 py-4">
                 <Icon
@@ -47,6 +48,6 @@ export const SidebarItem = ({ label, href, icon: Icon }: Props) => {
                     isActive && "opacity-100"
                 )}
             />
-        </button>
+        </Link>
     );
 };
