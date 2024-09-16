@@ -1,4 +1,6 @@
+import { Confetti } from "@/components/confetti";
 import { ScrollArea } from "@/components/ui/scroll-area";
+
 import { Navbar } from "./_components/navbar";
 import { Sidebar } from "./_components/sidebar";
 
@@ -18,6 +20,7 @@ export default function DashboardLayout({
             </div>
 
             <ScrollArea className="md:pl-56 pt-20 w-screen h-screen">
+                <Confetti />
                 {children}
             </ScrollArea>
         </div>

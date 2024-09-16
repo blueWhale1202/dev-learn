@@ -7,48 +7,46 @@ import { Button } from "@/components/ui/button";
 import { Loader, Trash } from "lucide-react";
 import { toast } from "sonner";
 
+import { useConfettiStore } from "@/hooks/use-confetti-store";
 import { useConfirm } from "@/hooks/use-confirm";
-import { useDeleteChapter } from "../_hooks/use-delete-chapter";
-import { usePublishChapter } from "../_hooks/use-publish-chapter";
-import { useUnPublishChapter } from "../_hooks/use-unpublish-chapter";
+
+import { useDeleteCourse } from "../_hooks/use-delete-course";
+import { usePublishCourse } from "../_hooks/use-publish-course";
+import { useUnPublishCourse } from "../_hooks/use-unpublish-course";
 
 type Props = {
     disabled: boolean;
     courseId: string;
-    chapterId: string;
     isPublished: boolean;
 };
 
-export const ChapterActions = ({
-    disabled,
-    courseId,
-    chapterId,
-    isPublished,
-}: Props) => {
+export const CourseActions = ({ disabled, courseId, isPublished }: Props) => {
     const { ConfirmDialog, confirm } = useConfirm(
-        "Are you sure want delete this chapter?"
+        "Are you sure want delete this course?"
     );
 
-    const deleteChapter = useDeleteChapter(courseId);
-    const publishChapter = usePublishChapter(courseId);
-    const unPublishChapter = useUnPublishChapter(courseId);
+    const openConfetti = useConfettiStore((state) => state.onOpen);
+
+    const deleteCourse = useDeleteCourse();
+    const publishCourse = usePublishCourse();
+    const unPublishCourse = useUnPublishCourse();
 
     const router = useRouter();
 
     const onClick = async () => {
         if (isPublished) {
-            unPublishChapter.mutate(chapterId, {
+            unPublishCourse.mutate(courseId, {
                 onSuccess() {
-                    toast.success("Chapter unPublished");
+                    toast.success("Course unPublished");
                     router.refresh();
                 },
             });
         } else {
-            publishChapter.mutate(chapterId, {
+            publishCourse.mutate(courseId, {
                 onSuccess() {
-                    toast.success("Chapter published");
-                    router.push(`/teacher/courses/${courseId}`);
+                    toast.success("Course published");
                     router.refresh();
+                    openConfetti();
                 },
             });
         }
@@ -59,10 +57,10 @@ export const ChapterActions = ({
 
         if (!ok) return;
 
-        deleteChapter.mutate(chapterId, {
+        deleteCourse.mutate(courseId, {
             onSuccess() {
-                toast.success("Chapter deleted");
-                router.replace(`/teacher/courses/${courseId}`);
+                toast.success("Course deleted");
+                router.replace(`/teacher/courses`);
             },
         });
     };
@@ -70,8 +68,8 @@ export const ChapterActions = ({
     return (
         <>
             <ConfirmDialog />
-            {deleteChapter.isPending && (
-                <div className="absolute inset-0 bg-slate-500/40 flex items-center justify-center">
+            {deleteCourse.isPending && (
+                <div className="absolute inset-0 bg-slate-500/40 flex items-center justify-center z-10">
                     <Loader className="size-8 text-sky-700 animate-spin" />
                 </div>
             )}
@@ -80,7 +78,7 @@ export const ChapterActions = ({
                     size="sm"
                     variant="outline"
                     onClick={onDelete}
-                    disabled={deleteChapter.isPending}
+                    disabled={deleteCourse.isPending}
                 >
                     <Trash className="size-4" />
                 </Button>
@@ -88,9 +86,9 @@ export const ChapterActions = ({
                     size="sm"
                     disabled={
                         disabled ||
-                        deleteChapter.isPending ||
-                        publishChapter.isPending ||
-                        unPublishChapter.isPending
+                        deleteCourse.isPending ||
+                        publishCourse.isPending ||
+                        unPublishCourse.isPending
                     }
                     onClick={onClick}
                 >
