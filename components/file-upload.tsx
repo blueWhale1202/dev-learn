@@ -1,3 +1,5 @@
+"use client";
+
 import { ourFileRouter } from "@/app/api/uploadthing/core";
 import { UploadDropzone } from "@/lib/uploadthing";
 import { toast } from "sonner";
@@ -12,7 +14,7 @@ export const FileUpload = ({ onChange, endpoint }: Props) => {
         <UploadDropzone
             endpoint={endpoint}
             onClientUploadComplete={(res) => {
-                console.log(res);
+                console.log("🚀 ~ onClientUploadComplete ~ res:", res);
                 onChange(res[0].url);
             }}
             onUploadError={(error: Error) => {

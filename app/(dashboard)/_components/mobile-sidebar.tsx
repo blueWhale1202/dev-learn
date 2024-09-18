@@ -1,4 +1,12 @@
-import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+import {
+    Sheet,
+    SheetContent,
+    SheetDescription,
+    SheetHeader,
+    SheetTitle,
+    SheetTrigger,
+} from "@/components/ui/sheet";
+import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
 import { Menu } from "lucide-react";
 import { Sidebar } from "./sidebar";
 
@@ -9,6 +17,12 @@ export const MobileSidebar = () => {
                 <Menu />
             </SheetTrigger>
             <SheetContent side="left" className="p-0 bg-white">
+                <VisuallyHidden>
+                    <SheetHeader>
+                        <SheetTitle>LMS UIT</SheetTitle>
+                        <SheetDescription>Course option</SheetDescription>
+                    </SheetHeader>
+                </VisuallyHidden>
                 <Sidebar />
             </SheetContent>
         </Sheet>

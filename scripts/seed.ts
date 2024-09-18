@@ -1,3 +1,4 @@
+import { courseNames } from "@/constants";
 import { PrismaClient } from "@prisma/client";
 
 const db = new PrismaClient();
@@ -5,18 +6,7 @@ const db = new PrismaClient();
 async function main() {
     try {
         await db.category.createMany({
-            data: [
-                { name: "Web Development Bootcamp" },
-                { name: "Full Stack Web Developer" },
-                { name: "Mastering Modern JavaScript" },
-                { name: "React for Beginners" },
-                { name: "Building Responsive Websites" },
-                { name: "Vue.js Fundamentals" },
-                { name: "Node.js and Express.js" },
-                { name: "Advanced Web Security" },
-                { name: "Front-End Development Mastery" },
-                { name: "Back-End Development with Python" },
-            ],
+            data: courseNames,
         });
 
         console.log("seed categories success");
