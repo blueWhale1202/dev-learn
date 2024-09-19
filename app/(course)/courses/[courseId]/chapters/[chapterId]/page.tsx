@@ -2,7 +2,14 @@ import { auth } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
 
 import { getChapter } from "@/actions/get-chapter";
+
+import { Separator } from "@/components/ui/separator";
+
 import { Banner } from "@/components/banner";
+import { Preview } from "@/components/preview";
+
+import { FileIcon } from "lucide-react";
+import { CourseEnrollButton } from "./_components/enroll-button";
 import { VideoPlayer } from "./_components/video-player";
 
 type Props = {
@@ -68,6 +75,53 @@ const ChapterPage = async ({ params }: Props) => {
                         isLocked={isLocked}
                         completeOnEnd={completeOnEnd}
                     />
+                </div>
+
+                <div>
+                    <div className="p-4 flex flex-col md:flex-row items-center justify-between">
+                        <h2 className="text-2xl font-semibold mb-2">
+                            {chapter.title}
+                        </h2>
+                        {purchase ? (
+                            <div>Add progress</div>
+                        ) : (
+                            <CourseEnrollButton
+                                courseId={courseId}
+                                price={course.price!}
+                            />
+                        )}
+                    </div>
+
+                    <Separator />
+
+                    <div>
+                        <Preview value={chapter.description!} />
+                    </div>
+
+                    {!!attachments && (
+                        <>
+                            <Separator />
+
+                            <div className="p-4 space-y-2">
+                                <p className="text-base font-medium">
+                                    Attachment
+                                </p>
+                                {attachments.map((attachment) => (
+                                    <a
+                                        key={attachment.id}
+                                        href={attachment.url}
+                                        target="_blank"
+                                        className="flex items-center p-3 w-full bg-sky-200 border rounded-md text-sky-700 hover:underline"
+                                    >
+                                        <FileIcon className="size-4 mr-2" />
+                                        <span className="line-clamp-1 text-sm">
+                                            {attachment.name}
+                                        </span>
+                                    </a>
+                                ))}
+                            </div>
+                        </>
+                    )}
                 </div>
             </div>
         </div>
