@@ -1,9 +1,12 @@
-import { IconBadge } from "@/components/icon-badge";
-import { AspectRatio } from "@/components/ui/aspect-ratio";
-import { formatPrice } from "@/lib/format";
-import { BookOpen } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
+
+import { formatPrice } from "@/lib/format";
+import { BookOpen } from "lucide-react";
+
+import { CourseProgress } from "@/app/(course)/courses/[courseId]/_components/course-progress";
+import { IconBadge } from "@/components/icon-badge";
+import { AspectRatio } from "@/components/ui/aspect-ratio";
 
 type Props = {
     id: string;
@@ -58,7 +61,11 @@ export const CourseCard = ({
                     </div>
 
                     {progress !== null ? (
-                        <div>TODO: Progress components</div>
+                        <CourseProgress
+                            value={progress}
+                            size="sm"
+                            variant={progress === 100 ? "success" : "default"}
+                        />
                     ) : (
                         <p className="text-base md:text-sm font-medium text-slate-700">
                             {formatPrice(price)}

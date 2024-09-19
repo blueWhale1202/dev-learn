@@ -9,6 +9,8 @@ import { Banner } from "@/components/banner";
 import { Preview } from "@/components/preview";
 
 import { FileIcon } from "lucide-react";
+
+import { CourseProgressButton } from "./_components/course-progress-button";
 import { CourseEnrollButton } from "./_components/enroll-button";
 import { VideoPlayer } from "./_components/video-player";
 
@@ -83,7 +85,12 @@ const ChapterPage = async ({ params }: Props) => {
                             {chapter.title}
                         </h2>
                         {purchase ? (
-                            <div>Add progress</div>
+                            <CourseProgressButton
+                                courseId={courseId}
+                                chapterId={chapterId}
+                                nextChapterId={nextChapter?.id}
+                                isCompleted={!!userProgress?.isCompleted}
+                            />
                         ) : (
                             <CourseEnrollButton
                                 courseId={courseId}

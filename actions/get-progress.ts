@@ -19,6 +19,7 @@ export const getProgress = async (userId: string, courseId: string) => {
         const validChapterCompleted = await db.userProgress.count({
             where: {
                 userId,
+                isCompleted: true,
                 chapterId: {
                     in: publishedChapterIds,
                 },

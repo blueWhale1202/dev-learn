@@ -5,7 +5,10 @@ import { redirect } from "next/navigation";
 import { db } from "@/lib/db";
 import { auth } from "@clerk/nextjs/server";
 
+import { ScrollArea } from "@/components/ui/scroll-area";
+
 import { ChapterSidebar } from "./chapter-sidebar";
+import { CourseProgress } from "./course-progress";
 
 type Props = {
     course: CourseWithChapter;
@@ -30,12 +33,19 @@ export const CourseSidebar = async ({ course, progressCount }: Props) => {
 
     return (
         <div className="h-full border-r flex flex-col overflow-y-auto shadow-sm">
-            <div className="p-8 h-20 flex flex-col border-b">
+            <div className="p-8 flex flex-col border-b">
                 <h1 className="font-semibold">{course.title}</h1>
-                {/* Add progress */}
+                {purchase && (
+                    <div className="mt-4">
+                        <CourseProgress
+                            variant="success"
+                            value={progressCount}
+                        />
+                    </div>
+                )}
             </div>
 
-            <div className="flex flex-col w-full">
+            <ScrollArea className="flex flex-col w-full">
                 {course.chapters.map((chapter) => (
                     <ChapterSidebar
                         key={chapter.id}
@@ -46,7 +56,7 @@ export const CourseSidebar = async ({ course, progressCount }: Props) => {
                         isLocked={!chapter.isFree && !purchase}
                     />
                 ))}
-            </div>
+            </ScrollArea>
         </div>
     );
 };

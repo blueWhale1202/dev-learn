@@ -3,6 +3,7 @@ import { redirect } from "next/navigation";
 import { db } from "@/lib/db";
 import { auth } from "@clerk/nextjs/server";
 
+import { Confetti } from "@/components/confetti";
 import { ScrollArea } from "@/components/ui/scroll-area";
 
 import { CourseNavbar } from "./_components/course-navbar";
@@ -66,6 +67,7 @@ const CourseLayout = async ({ params, children }: Props) => {
             </div>
 
             <ScrollArea className="pt-20 md:pl-80 w-screen h-screen">
+                <Confetti />
                 {children}
             </ScrollArea>
         </div>
