@@ -3,10 +3,12 @@ import { redirect } from "next/navigation";
 import { db } from "@/lib/db";
 import { auth } from "@clerk/nextjs/server";
 
-import { getCourses } from "@/actions/get-courses";
 import { SearchInput } from "@/components/search-input";
-import { Categories } from "./_components/categories";
-import { CourseList } from "./_components/course-list";
+
+import { Categories } from "@/features/search/components/categories";
+import { CourseList } from "@/features/search/components/course-list";
+
+import { getCourses } from "@/actions/get-courses";
 
 type Props = {
     searchParams: {

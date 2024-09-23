@@ -1,9 +1,12 @@
-import { DataTable } from "@/components/data-table";
+import { redirect } from "next/navigation";
+
 import { db } from "@/lib/db";
 import { auth } from "@clerk/nextjs/server";
-import { redirect } from "next/navigation";
-import { columns } from "./_components/columns";
-import { TableToolbar } from "./_components/table-toolbar";
+
+import { DataTable } from "@/components/data-table";
+
+import { columns } from "@/features/teacher/course-list/components/columns";
+import { TableToolbar } from "@/features/teacher/course-list/components/table-toolbar";
 
 const CoursesPage = async () => {
     const { userId } = auth();

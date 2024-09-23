@@ -9,11 +9,11 @@ import { ArrowLeft, Eye, LayoutDashboard, VideoIcon } from "lucide-react";
 import { Banner } from "@/components/banner";
 import { IconBadge } from "@/components/icon-badge";
 
-import { ChapterAccessForm } from "./_components/chapter-access-form";
-import { ChapterActions } from "./_components/chapter-actions";
-import { ChapterDescriptionForm } from "./_components/chapter-description-form";
-import { ChapterTitleForm } from "./_components/chapter-title-form";
-import { ChapterVideoForm } from "./_components/chapter-video-form";
+import { ChapterAccessForm } from "@/features/teacher/chapters/components/chapter-access-form";
+import { ChapterActions } from "@/features/teacher/chapters/components/chapter-actions";
+import { ChapterDescriptionForm } from "@/features/teacher/chapters/components/chapter-description-form";
+import { ChapterTitleForm } from "@/features/teacher/chapters/components/chapter-title-form";
+import { ChapterVideoForm } from "@/features/teacher/chapters/components/chapter-video-form";
 
 type Props = {
     params: {

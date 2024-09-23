@@ -6,8 +6,8 @@ import { auth } from "@clerk/nextjs/server";
 import { Confetti } from "@/components/confetti";
 import { ScrollArea } from "@/components/ui/scroll-area";
 
-import { CourseNavbar } from "./_components/course-navbar";
-import { CourseSidebar } from "./_components/course-sidebar";
+import { CourseNavbar } from "@/features/courses/components/course-navbar";
+import { CourseSidebar } from "@/features/courses/components/course-sidebar";
 
 import { getProgress } from "@/actions/get-progress";
 

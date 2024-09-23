@@ -10,9 +10,9 @@ import { Preview } from "@/components/preview";
 
 import { FileIcon } from "lucide-react";
 
-import { CourseProgressButton } from "./_components/course-progress-button";
-import { CourseEnrollButton } from "./_components/enroll-button";
-import { VideoPlayer } from "./_components/video-player";
+import { CourseProgressButton } from "@/features/chapter/components/course-progress-button";
+import { CourseEnrollButton } from "@/features/chapter/components/enroll-button";
+import { VideoPlayer } from "@/features/chapter/components/video-player";
 
 type Props = {
     params: {

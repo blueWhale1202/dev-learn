@@ -3,8 +3,8 @@ import { redirect } from "next/navigation";
 import { auth } from "@clerk/nextjs/server";
 import { CheckCircle, Clock } from "lucide-react";
 
-import { CourseList } from "../search/_components/course-list";
-import { InfoCard } from "./_components/info-card";
+import { CourseList } from "@/features/search/components/course-list";
+import { InfoCard } from "@/features/student/components/info-card";
 
 import { getDashboardCourses } from "@/actions/get-dashboard-courses";
 

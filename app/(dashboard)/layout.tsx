@@ -1,8 +1,8 @@
 import { Confetti } from "@/components/confetti";
 import { ScrollArea } from "@/components/ui/scroll-area";
 
-import { Navbar } from "./_components/navbar";
-import { Sidebar } from "./_components/sidebar";
+import { Navbar } from "@/features/dashboard/components/navbar";
+import { Sidebar } from "@/features/dashboard/components/sidebar";
 
 export default function DashboardLayout({
     children,

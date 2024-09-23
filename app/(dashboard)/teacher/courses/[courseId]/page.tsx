@@ -13,14 +13,14 @@ import {
 import { Banner } from "@/components/banner";
 import { IconBadge } from "@/components/icon-badge";
 
-import { AttachmentForm } from "./_components/attachment-form";
-import { CategoryForm } from "./_components/category-form";
-import { ChaptersForm } from "./_components/chapters-form";
-import { CourseActions } from "./_components/course-actions";
-import { DescriptionForm } from "./_components/description-form";
-import { ImageForm } from "./_components/image-form";
-import { PriceForm } from "./_components/price-form";
-import { TitleForm } from "./_components/title-form";
+import { AttachmentForm } from "@/features/teacher/course/components/attachment-form";
+import { CategoryForm } from "@/features/teacher/course/components/category-form";
+import { ChaptersForm } from "@/features/teacher/course/components/chapters-form";
+import { CourseActions } from "@/features/teacher/course/components/course-actions";
+import { DescriptionForm } from "@/features/teacher/course/components/description-form";
+import { ImageForm } from "@/features/teacher/course/components/image-form";
+import { PriceForm } from "@/features/teacher/course/components/price-form";
+import { TitleForm } from "@/features/teacher/course/components/title-form";
 
 type Props = {
     params: { courseId: string };
