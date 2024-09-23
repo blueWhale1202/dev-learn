@@ -50,9 +50,13 @@ export function TableToolbar<TData>({ table }: Props<TData>) {
             <ConfirmDialog />
             <div className="flex items-center gap-x-2">
                 {!!idsSelected.length && (
-                    <Button variant="destructive" onClick={onDelete}>
-                        <Trash className="size-4 mr-2" />
-                        Delete courses
+                    <Button
+                        variant="destructive"
+                        onClick={onDelete}
+                        className="gap-x-2"
+                    >
+                        <Trash className="size-4" />
+                        <span className="hidden sm:block">Delete courses</span>
                     </Button>
                 )}
 

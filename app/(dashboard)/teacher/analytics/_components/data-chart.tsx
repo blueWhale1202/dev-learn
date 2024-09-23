@@ -1,13 +1,6 @@
 "use client";
 
-import {
-    Bar,
-    BarChart,
-    CartesianGrid,
-    LabelList,
-    XAxis,
-    YAxis,
-} from "recharts";
+import { Bar, BarChart, CartesianGrid, LabelList, XAxis } from "recharts";
 
 import {
     Card,
@@ -32,7 +25,7 @@ type Props = {
     }[];
 };
 
-export const Chart = ({ data }: Props) => {
+export const DataChart = ({ data }: Props) => {
     return (
         <Card>
             <CardHeader>
@@ -49,16 +42,12 @@ export const Chart = ({ data }: Props) => {
                         }}
                     >
                         <CartesianGrid vertical={false} />
+
                         <XAxis
                             dataKey="name"
                             tickLine={false}
                             tickMargin={10}
                             axisLine={false}
-                        />
-                        <YAxis
-                            tickLine={false}
-                            axisLine={false}
-                            tickFormatter={(value) => `$${value}`}
                         />
 
                         <Bar

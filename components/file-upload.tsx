@@ -15,7 +15,7 @@ export const FileUpload = ({ onChange, endpoint }: Props) => {
             endpoint={endpoint}
             onClientUploadComplete={(res) => {
                 console.log("🚀 ~ onClientUploadComplete ~ res:", res);
-                onChange(res[0].name || res[0].url);
+                onChange(res[0].url);
             }}
             onUploadError={(error: Error) => {
                 toast.error(error.message);

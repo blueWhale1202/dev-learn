@@ -23,10 +23,11 @@ interface Props<TData> {
 
 export function TablePagination<TData>({ table }: Props<TData>) {
     return (
-        <div className="flex items-center justify-between px-2">
-            <div className="flex-1 text-sm text-muted-foreground">
+        <div className="flex items-center justify-between gap-x-2 px-2">
+            <div className="flex-1 text-sm text-muted-foreground text-nowrap">
                 {table.getFilteredSelectedRowModel().rows.length} of{" "}
-                {table.getFilteredRowModel().rows.length} row(s) selected.
+                {table.getFilteredRowModel().rows.length}{" "}
+                <span className="hidden sm:inline-block">row(s) selected.</span>
             </div>
             <div className="flex items-center space-x-6 lg:space-x-8">
                 <div className="flex items-center space-x-2">

@@ -1,7 +1,7 @@
 "use client";
 
 import { UserButton } from "@clerk/nextjs";
-import { LogOut } from "lucide-react";
+import { GraduationCap, LogOut } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { SearchInput } from "./search-input";
@@ -36,7 +36,10 @@ export const NavbarRoutes = () => {
                         asChild
                         className="text-sm"
                     >
-                        <Link href="/teacher/courses">Teacher mode</Link>
+                        <Link href="/teacher/courses">
+                            <GraduationCap className="size-4 mr-2" />
+                            Teacher mode
+                        </Link>
                     </Button>
                 )}
                 <UserButton />

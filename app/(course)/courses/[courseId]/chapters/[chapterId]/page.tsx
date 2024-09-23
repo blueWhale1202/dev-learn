@@ -111,7 +111,7 @@ const ChapterPage = async ({ params }: Props) => {
 
                             <div className="p-4 space-y-2">
                                 <p className="text-base font-medium">
-                                    Attachment
+                                    Attachments
                                 </p>
                                 {attachments.map((attachment) => (
                                     <a

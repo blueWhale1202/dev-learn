@@ -97,7 +97,10 @@ export const CourseDialog = () => {
     return (
         <Drawer open={open} onOpenChange={setOpen}>
             <DrawerTrigger asChild>
-                <Button>Create new course</Button>
+                <Button className="gap-x-2">
+                    <PlusCircle className="size-4" />
+                    <span className="hidden sm:block">Create new course</span>
+                </Button>
             </DrawerTrigger>
             <DrawerContent>
                 <DrawerHeader className="text-left">
