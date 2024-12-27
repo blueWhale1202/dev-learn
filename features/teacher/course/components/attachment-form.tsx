@@ -45,7 +45,7 @@ export const AttachmentForm = ({ initialData, courseId }: Props) => {
         setIsEditing(!isEditing);
     };
 
-    const onSubmit = async (values: { url: string }) => {
+    const onSubmit = async (values: { url: string; name: string }) => {
         console.log(values);
         createAttachment.mutate(values, {
             onSuccess() {
@@ -193,7 +193,7 @@ export const AttachmentForm = ({ initialData, courseId }: Props) => {
                     <div>
                         <FileUpload
                             endpoint="courseAttachment"
-                            onChange={(url) => onSubmit({ url: url })}
+                            onChange={(url, name) => onSubmit({ url, name })}
                         />
 
                         <p className="text-xs text-muted-foreground mt-4">

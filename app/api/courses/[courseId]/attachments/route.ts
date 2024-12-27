@@ -14,7 +14,10 @@ export async function POST(req: Request, { params }: Params) {
         }
 
         const { courseId } = params;
-        const { url }: { url: string } = await req.json();
+        const { url, name } = (await req.json()) as {
+            url: string;
+            name: string;
+        };
 
         const ownerCourse = await db.course.findUnique({
             where: {
@@ -31,7 +34,7 @@ export async function POST(req: Request, { params }: Params) {
             data: {
                 url,
                 courseId,
-                name: url.split("/").pop() || url,
+                name: name || url,
             },
         });
 

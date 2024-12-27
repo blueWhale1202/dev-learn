@@ -1,6 +1,6 @@
 import { TRoute } from "../types";
 
-import { BarChart, Compass, Layout, List } from "lucide-react";
+import { BarChart, Compass, Layout, List, MessageSquare } from "lucide-react";
 
 export const guestRoutes: TRoute[] = [
     {
@@ -12,6 +12,11 @@ export const guestRoutes: TRoute[] = [
         icon: Compass,
         label: "Browse",
         href: "/search",
+    },
+    {
+        icon: MessageSquare,
+        label: "Forum",
+        href: process.env.NEXT_PUBLIC_FORUM_URL!,
     },
 ];
 
