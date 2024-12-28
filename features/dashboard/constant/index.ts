@@ -3,11 +3,11 @@ import { TRoute } from "../types";
 import {
     AlarmClockCheck,
     BarChart,
-    BookOpen,
     Compass,
     DraftingCompass,
     Layout,
     List,
+    MessageCircleMore,
     SquareTerminal,
     VideoIcon,
 } from "lucide-react";
@@ -40,9 +40,9 @@ export const teacherRoutes: TRoute[] = [
 
 export const toolRoutes: TRoute[] = [
     {
-        label: "Course",
-        href: process.env.NEXT_PUBLIC_COURSE_URL!,
-        icon: BookOpen,
+        label: "Forum",
+        href: process.env.NEXT_PUBLIC_FORUM_URL!,
+        icon: MessageCircleMore,
     },
     {
         label: "Task Manager",

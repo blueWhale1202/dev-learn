@@ -19,9 +19,9 @@ import {
 
 import {
     AlarmClockCheck,
-    BookOpen,
     DraftingCompass,
     ListCollapse,
+    MessageCircleMore,
     SquareTerminal,
     VideoIcon,
 } from "lucide-react";
@@ -48,9 +48,9 @@ export const Tools = () => {
                     <DropdownMenuLabel>Tools</DropdownMenuLabel>
                     <DropdownMenuSeparator />
                     <DropdownMenuItem asChild>
-                        <Link href={process.env.NEXT_PUBLIC_COURSE_URL!}>
-                            <BookOpen className="" />
-                            Course
+                        <Link href={process.env.NEXT_PUBLIC_FORUM_URL!}>
+                            <MessageCircleMore />
+                            Forum
                         </Link>
                     </DropdownMenuItem>
                     <DropdownMenuItem asChild>
