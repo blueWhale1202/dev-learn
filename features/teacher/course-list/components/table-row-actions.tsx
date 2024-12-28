@@ -65,17 +65,19 @@ export function TableRowActions<TData>({ row }: Props<TData>) {
                 <DropdownMenuContent align="start">
                     <DropdownMenuItem asChild disabled={isPending}>
                         <Link href={`/teacher/courses/${id}`}>
-                            <Edit className="size-4 mr-2" />
+                            <Edit />
                             Edit
                         </Link>
                     </DropdownMenuItem>
                     <DropdownMenuItem
                         onClick={onDelete}
-                        className="text-rose-500"
+                        className="text-rose-500 group"
                         disabled={isPending}
                     >
-                        <Trash className="size-4 mr-2" />
-                        Delete
+                        <Trash className="group-hover:text-rose-500" />
+                        <span className="group-hover:text-rose-500">
+                            Delete
+                        </span>
                     </DropdownMenuItem>
                 </DropdownMenuContent>
             </DropdownMenu>

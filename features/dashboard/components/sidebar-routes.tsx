@@ -3,6 +3,7 @@
 import { usePathname } from "next/navigation";
 import { guestRoutes, teacherRoutes } from "../constant";
 
+import { Tools } from "@/components/tools";
 import { SidebarItem } from "./sidebar-item";
 
 export const SidebarRoutes = () => {
@@ -22,6 +23,8 @@ export const SidebarRoutes = () => {
                     icon={route.icon}
                 />
             ))}
+
+            <Tools />
         </div>
     );
 };
