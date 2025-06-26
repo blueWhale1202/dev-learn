@@ -4,15 +4,15 @@
 
 ---
 
-## 💡 Problem Statement
+## Problem Statement
 
 Most LMS systems offer static content and asynchronous learning, which limits learner engagement and makes it difficult to replicate a classroom environment. Real-time collaboration, live streaming, and secure programming practice remain underdeveloped in current solutions.
 
 ---
 
-## 🚀 What Interactive LMS Offers
+## What Interactive LMS Offers
 
-### ✔️ Real-Time Coding Lectures with Resilient Ingress Architecture
+### Real-Time Coding Lectures with Resilient Ingress Architecture
 
 To support low-latency, real-time lectures, the LMS integrates a **self-hosted ingress cluster** built on top of **LiveKit’s Ingress nodes**. These nodes receive video streams (via RTMP/WHIP) and forward them as **WebRTC data** to connected students.
 
@@ -23,11 +23,12 @@ To support low-latency, real-time lectures, the LMS integrates a **self-hosted i
 * **LiveKit Server**: Authenticates sessions, handles signaling, and routes WebRTC data to participants in the classroom.
 * **Redis Pub/Sub + Store**: Maintains real-time state about active ingress nodes, enabling dynamic scaling and fault recovery.
 
-![Self-hosting Ingress Service](https://github.com/user-attachments/assets/0e3ac494-b418-47e4-96fb-d885c2f9d069)
+![Self-hosting Ingress Service](https://github.com/user-attachments/assets/06baae4f-3c5b-47a7-8209-ddcc0ade122a)
+
 
 > This design allows students to join live lectures from unstable networks without stream interruption. The multi-node ingest layer acts as a fault-tolerant, scalable entry point that isolates traffic spikes and enables real-time switching between instructors or encoding pipelines.
 
-### ✔️ Flexible Video Infrastructure with Modular Strategy
+### Flexible Video Infrastructure with Modular Strategy
 
 To accommodate various levels of scalability, cost, and control, the system supports both **off-the-shelf** video APIs and **fully customizable** DIY streaming pipelines:
 
@@ -38,7 +39,7 @@ To accommodate various levels of scalability, cost, and control, the system supp
 
 > Diagram: Landscape showing tradeoffs between MUX (API-driven), LMS-hosted pipelines, and real-time options like LiveKit.
 
-### ✔️ DIY Livestream Processing Pipeline
+### DIY Livestream Processing Pipeline
 
 We developed a lightweight, in-house video processing pipeline to support custom livestream scenarios:
 
@@ -51,7 +52,7 @@ We developed a lightweight, in-house video processing pipeline to support custom
 
 > Diagram: Modular stream processing system—supports real-time ingest, ABR packaging, and global delivery via CDN.
 
-### ✔️ Mux-Powered Video-on-Demand (VOD) and BI Integration
+### Mux-Powered Video-on-Demand (VOD) and BI Integration
 
 For recorded sessions and high-quality video playback, we use **MUX** to:
 
@@ -65,7 +66,7 @@ For recorded sessions and high-quality video playback, we use **MUX** to:
 
 ---
 
-## 🧱 Architecture Summary
+## Architecture Summary
 
 | Component           | Description                                                              |
 | ------------------- | ------------------------------------------------------------------------ |
@@ -78,7 +79,7 @@ For recorded sessions and high-quality video playback, we use **MUX** to:
 
 ---
 
-## 🏫 Value Delivered
+## Value Delivered
 
 | Stakeholder      | Value                                                                                    |
 | ---------------- | ---------------------------------------------------------------------------------------- |
@@ -88,7 +89,7 @@ For recorded sessions and high-quality video playback, we use **MUX** to:
 
 ---
 
-## 🔧 Development Highlights
+## Development Highlights
 
 * Hybrid livestream model: LiveKit for real-time; MUX for VOD.
 * Cluster-ready LiveKit Ingress setup with Redis coordination.
