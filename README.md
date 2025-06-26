@@ -1,66 +1,94 @@
-# 🎓 Course & LMS Platform  
+# Interactive LMS – Real-Time Learning Platform for Web Programming
 
-🚀 **A modern, full-featured Learning Management System (LMS) platform** built using cutting-edge technologies to deliver seamless course creation, management, and student engagement. This platform enables educators to sell courses, manage content, and track student progress while offering learners a smooth and interactive experience.  
-
----
-
-## ✨ Key Features  
-
-### 📚 Course Management  
-- Browse and filter courses with ease  
-- Purchase courses securely via **Stripe** integration  
-- Track learning progress with **completion markers**  
-- Automatic **progress calculation** per course  
-
-### 👨‍🎓 Student Dashboard  
-- View enrolled courses and track progress  
-- Resume courses from where you left off  
-
-### 🎓 Teacher Mode  
-- **Create new courses** and organize content  
-- Add, edit, and reorder chapters via **drag & drop**  
-- Upload **thumbnails, attachments, and videos** effortlessly  
-- Rich-text editor for course descriptions  
-
-### 📺 Advanced Video Handling  
-- **UploadThing** for file management  
-- **Mux** for video processing  
-- **HLS video player** for smooth playback  
-
-### 🔐 Authentication & Database  
-- Secure **user authentication** using **Clerk**  
-- **Prisma ORM** with **PostgreSQL (Neon)** for efficient data handling  
+**Interactive LMS** is a real-time, modular learning platform designed for hands-on web programming education. Unlike traditional LMS platforms, it integrates live coding sessions, secure code execution, collaborative whiteboards, and student progress tracking to create an engaging and practical learning experience.
 
 ---
 
-## 🛠️ Technologies Used  
+## 💡 Problem Statement
 
-| Technology      | Purpose |
-|----------------|---------|
-| **Next.js 14 (App Router)** | Modern frontend framework for fast and scalable UI |
-| **Prisma ORM** | Efficient database management |
-| **PostgreSQL (Neon)** | Scalable relational database |
-| **Clerk** | Authentication & user management |
-| **Stripe** | Secure payment processing |
-| **UploadThing** | File uploads for thumbnails, videos & attachments |
-| **Mux** | Video processing & HLS streaming |
-| **Tailwind CSS** | Modern UI styling |
-| **ShadCN** | Beautiful, accessible UI components |
-| **TypeScript** | Ensuring type safety & reliability |
+Most LMS systems offer static content and asynchronous learning, which limits learner engagement and makes it difficult to replicate a classroom environment. Real-time collaboration, live streaming, and secure programming practice remain underdeveloped in current solutions.
 
 ---
 
-## 🌟 Why This Project Stands Out  
+## 🚀 What Interactive LMS Offers
 
-This LMS platform is built using industry-leading technologies, ensuring high performance, scalability, and a user-friendly experience. From seamless course purchasing to intuitive content management, this project showcases **strong front-end skills, backend efficiency, and full-stack development expertise**.  
+### ✔️ Real-Time Coding Lectures
 
-### 👨‍💻 **What I Gained from Building This**  
-- Architecting a modern LMS with **Next.js & Prisma**  
-- Implementing a **full payment flow** with **Stripe**  
-- Managing **secure authentication** with **Clerk**  
-- Handling **video streaming & optimization** with **Mux**  
-- Creating a highly **responsive & accessible UI** with **Tailwind CSS & ShadCN**
+* Powered by **LiveKit**, instructors can deliver low-latency, real-time WebRTC-based lessons.
+* Students can join via browsers, interact, and follow synchronized code and slides.
+
+### ✔️ Secure & Scalable Livestream Infrastructure
+
+* Ingest system built with self-hosted **LiveKit Ingress** services behind a TCP load balancer.
+* Uses **Redis Pub/Sub** to manage distributed ingress node info.
+
+![Self-hosting Ingress Service](https://github.com/user-attachments/assets/0e3ac494-b418-47e4-96fb-d885c2f9d069)
+
+![Uploading ingress-ingress-service-light.svg…]()
+
+
+> Diagram: Ingress architecture showing LiveKit Ingress clusters, Redis sync, and load balancing.
+
+### ✔️ Flexible Video Infrastructure
+
+* Adopted a hybrid between API-driven (Mux) and self-hosted DIY video streaming models.
+* Allows customization from off-the-shelf to full infrastructure control.
+
+![Video Integration Spectrum](https://github.com/user-attachments/assets/dcf53f1f-2efa-4b41-ab45-0f905af971ce)
+
+![image](https://github.com/user-attachments/assets/49146097-b336-42c0-9a6e-9e82cf0de534)
+
+> Diagram: Industry landscape showing where Mux, LiveKit, and LMS DIY livestreaming fit.
+
+### ✔️ DIY Livestream Processing
+
+* In-house video ingest system supports transcoding, bitrate adaptation, and HLS packaging.
+* Reverse proxy gateway handles input streams from local/remote encoders.
+
+![DIY Livestream Footprint](https://github.com/user-attachments/assets/1bc78bab-5d6e-44b2-bc95-eafa7865fdc7)
+
+
+> Diagram: From raw video stream to segmented delivery via CDN, using modular pipeline.
+
+### ✔️ Mux-Powered VOD + Analytics
+
+* For recorded sessions, **MUX** handles RTMP ingest, storage, and playback with HLS.
+* Includes playback stats, thumbnails, alerts, and data exports for BI integration.
+
+
+![MUX Footprint](https://github.com/user-attachments/assets/883cfad8-4e56-4338-9461-ebdbc007d4ed)
+
+
+> Diagram: Mux integration showing data flow from camera to viewer and BI systems.
 
 ---
 
-🔥 **This isn’t just a project—it’s a showcase of what’s possible with cutting-edge tech.** Ready to redefine online learning! 🚀  
+## 🧱 Architecture Summary
+
+| Component           | Description                                                              |
+| ------------------- | ------------------------------------------------------------------------ |
+| **LiveKit Ingress** | Handles real-time ingest for WebRTC sessions with load balancing         |
+| **MUX Platform**    | Manages recorded lecture delivery, VOD hosting, and playback analytics   |
+| **Redis**           | Maintains real-time cluster sync and ingress node availability tracking  |
+| **CDN + HLS**       | Used for efficient adaptive video delivery (especially on Mux VOD flows) |
+| **Offline Editor**  | Uses Yjs + IndexedDB for local persistence and CRDT-based collaboration  |
+
+---
+
+## 🏫 Value Delivered
+
+| Stakeholder      | Value                                                                                    |
+| ---------------- | ---------------------------------------------------------------------------------------- |
+| **Learners**     | Join live classes, access on-demand videos, and collaborate in real-time                 |
+| **Educators**    | Deliver low-latency classes, track learning outcomes, and scale across sessions          |
+| **Institutions** | Balance between hosted and API-based video solutions, gain insights, and ensure security |
+
+---
+
+## 🔧 Development Highlights
+
+* Hybrid livestream model: LiveKit for real-time; Mux for VOD.
+* Cluster-ready LiveKit Ingress setup with Redis coordination.
+* Diagram-driven design and modular deployments (video, code, collaboration).
+
+> This LMS is not just another e-learning tool—it redefines the interactive classroom by combining scalable video infrastructure with real-time programming collaboration.
