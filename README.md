@@ -12,54 +12,56 @@ Most LMS systems offer static content and asynchronous learning, which limits le
 
 ## 🚀 What Interactive LMS Offers
 
-### ✔️ Real-Time Coding Lectures
+### ✔️ Real-Time Coding Lectures with Resilient Ingress Architecture
 
-* Powered by **LiveKit**, instructors can deliver low-latency, real-time WebRTC-based lessons.
-* Students can join via browsers, interact, and follow synchronized code and slides.
+To support low-latency, real-time lectures, the LMS integrates a **self-hosted ingress cluster** built on top of **LiveKit’s Ingress nodes**. These nodes receive video streams (via RTMP/WHIP) and forward them as **WebRTC data** to connected students.
 
-### ✔️ Secure & Scalable Livestream Infrastructure
+**Key architectural components:**
 
-* Ingest system built with self-hosted **LiveKit Ingress** services behind a TCP load balancer.
-* Uses **Redis Pub/Sub** to manage distributed ingress node info.
+* **TCP Load Balancer**: Distributes ingest traffic evenly across multiple LiveKit Ingress nodes to ensure availability and horizontal scalability.
+* **Ingress Cluster**: Each node is responsible for converting upstream streams (e.g., RTMP from OBS) into WebRTC format and forwarding them to the main **LiveKit Server**.
+* **LiveKit Server**: Authenticates sessions, handles signaling, and routes WebRTC data to participants in the classroom.
+* **Redis Pub/Sub + Store**: Maintains real-time state about active ingress nodes, enabling dynamic scaling and fault recovery.
 
 ![Self-hosting Ingress Service](https://github.com/user-attachments/assets/0e3ac494-b418-47e4-96fb-d885c2f9d069)
 
-![Uploading ingress-ingress-service-light.svg…]()
+> This design allows students to join live lectures from unstable networks without stream interruption. The multi-node ingest layer acts as a fault-tolerant, scalable entry point that isolates traffic spikes and enables real-time switching between instructors or encoding pipelines.
 
+### ✔️ Flexible Video Infrastructure with Modular Strategy
 
-> Diagram: Ingress architecture showing LiveKit Ingress clusters, Redis sync, and load balancing.
+To accommodate various levels of scalability, cost, and control, the system supports both **off-the-shelf** video APIs and **fully customizable** DIY streaming pipelines:
 
-### ✔️ Flexible Video Infrastructure
-
-* Adopted a hybrid between API-driven (Mux) and self-hosted DIY video streaming models.
-* Allows customization from off-the-shelf to full infrastructure control.
+* The architecture sits across a spectrum: **MUX** offers ease of use and deep analytics for video-on-demand, while our **in-house pipeline** supports real-time encoding and live events.
+* The hybrid setup allows seamless fallback, experimentation, and scaling depending on workload and event type.
 
 ![Video Integration Spectrum](https://github.com/user-attachments/assets/dcf53f1f-2efa-4b41-ab45-0f905af971ce)
 
-![image](https://github.com/user-attachments/assets/49146097-b336-42c0-9a6e-9e82cf0de534)
+> Diagram: Landscape showing tradeoffs between MUX (API-driven), LMS-hosted pipelines, and real-time options like LiveKit.
 
-> Diagram: Industry landscape showing where Mux, LiveKit, and LMS DIY livestreaming fit.
+### ✔️ DIY Livestream Processing Pipeline
 
-### ✔️ DIY Livestream Processing
+We developed a lightweight, in-house video processing pipeline to support custom livestream scenarios:
 
-* In-house video ingest system supports transcoding, bitrate adaptation, and HLS packaging.
-* Reverse proxy gateway handles input streams from local/remote encoders.
+* **Ingress Layer**: Streams are received via RTMP/SRT from OBS/FFmpeg, entering through a distributed reverse proxy gateway.
+* **Processing Engine**: Handles transcoding (codec normalization), bitrate ladder generation, and adaptive packaging (e.g., HLS).
+* **Segmentation & Origin**: Live streams are chopped into segments (2–6s) and stored on origin servers behind a CDN.
+* **Egress + Delivery**: Streams are distributed via global CDNs with manifest routing, tokenized URLs, and adaptive bitrate playback.
 
 ![DIY Livestream Footprint](https://github.com/user-attachments/assets/1bc78bab-5d6e-44b2-bc95-eafa7865fdc7)
 
+> Diagram: Modular stream processing system—supports real-time ingest, ABR packaging, and global delivery via CDN.
 
-> Diagram: From raw video stream to segmented delivery via CDN, using modular pipeline.
+### ✔️ Mux-Powered Video-on-Demand (VOD) and BI Integration
 
-### ✔️ Mux-Powered VOD + Analytics
+For recorded sessions and high-quality video playback, we use **MUX** to:
 
-* For recorded sessions, **MUX** handles RTMP ingest, storage, and playback with HLS.
-* Includes playback stats, thumbnails, alerts, and data exports for BI integration.
-
+* Handle RTMP ingest and automatic transcoding.
+* Generate playback-ready HLS streams with thumbnails, captions, and QoE metrics.
+* Export detailed engagement data into custom BI dashboards via Mux Data Streaming.
 
 ![MUX Footprint](https://github.com/user-attachments/assets/883cfad8-4e56-4338-9461-ebdbc007d4ed)
 
-
-> Diagram: Mux integration showing data flow from camera to viewer and BI systems.
+> Diagram: MUX pipeline from live session → storage → adaptive delivery → playback analytics.
 
 ---
 
@@ -69,6 +71,7 @@ Most LMS systems offer static content and asynchronous learning, which limits le
 | ------------------- | ------------------------------------------------------------------------ |
 | **LiveKit Ingress** | Handles real-time ingest for WebRTC sessions with load balancing         |
 | **MUX Platform**    | Manages recorded lecture delivery, VOD hosting, and playback analytics   |
+| **DIY Pipeline**    | Supports live video events with in-house encoding and segmentation       |
 | **Redis**           | Maintains real-time cluster sync and ingress node availability tracking  |
 | **CDN + HLS**       | Used for efficient adaptive video delivery (especially on Mux VOD flows) |
 | **Offline Editor**  | Uses Yjs + IndexedDB for local persistence and CRDT-based collaboration  |
@@ -87,8 +90,9 @@ Most LMS systems offer static content and asynchronous learning, which limits le
 
 ## 🔧 Development Highlights
 
-* Hybrid livestream model: LiveKit for real-time; Mux for VOD.
+* Hybrid livestream model: LiveKit for real-time; MUX for VOD.
 * Cluster-ready LiveKit Ingress setup with Redis coordination.
-* Diagram-driven design and modular deployments (video, code, collaboration).
+* Modular livestream pipeline for DIY encoding and delivery.
+* Emphasis on scalability, observability, and failover control.
 
-> This LMS is not just another e-learning tool—it redefines the interactive classroom by combining scalable video infrastructure with real-time programming collaboration.
+> Interactive LMS provides architectural flexibility and operational resilience—bridging the needs of real-time learning, scalable video infrastructure, and collaborative content delivery.
